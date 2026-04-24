@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Akdeniz Tıp Not Hesaplayıcı</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa, #dfe9f3);
+      min-height: 100vh;
+      color: #111827;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: auto;
+    }
+
+    .hero {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 30px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #4b5563;
+      font-size: 1.1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: 0 8px 35px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    .card h2 {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 18px;
+      border: none;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.9);
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .course {
+      margin-bottom: 20px;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .course-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .course-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .akts {
+      background: #111827;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      padding: 16px;
+      border-radius: 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .primary {
+      background: #111827;
+      color: white;
+    }
+
+    .primary:hover {
+      transform: translateY(-2px);
+    }
+
+    .secondary {
+      margin-top: 12px;
+      background: #e5e7eb;
+    }
+
+    .results {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .result-box {
+      background: rgba(255,255,255,0.75);
+      padding: 25px;
+      border-radius: 24px;
+    }
+
+    .result-title {
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .result-value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .highlight {
+      font-size: 3rem;
+    }
+
+    .success {
+      color: #059669;
+    }
+
+    .danger {
+      color: #dc2626;
+    }
+
+    .needed-score {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.7);
+    }
+
+    .footer-logo {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: rgba(17,24,39,0.9);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    @media(max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      body {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="hero">
+    <h1>Akdeniz Tıp Not Hesaplayıcı</h1>
+    <p>Komite notlarını gir, sistem otomatik olarak AKTS ağırlıklı ortalamayı ve dönem sonu notunu hesaplasın.</p>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2>Sınıf ve Not Girişi</h2>
+
+      <label>Sınıf Seç</label>
+      <select id="classSelect"></select>
+
+      <div id="courses"></div>
+
+      <label>Final Notu</label>
+      <input type="number" id="finalExam" min="0" max="100" placeholder="Final notunu gir">
+
+      <button class="primary" onclick="calculateResults()">Hesapla</button>
+      <button class="secondary" onclick="resetAll()">Temizle</button>
+    </div>
+
+    <div class="results">
+
+      <div class="result-box">
+        <div class="result-title">AKTS Ağırlıklı Komite Ortalaması</div>
+        <div class="result-value" id="committeeAverage">0.00</div>
+      </div>
+
+      <div class="result-box">
+        <div class="result-title">Final Etkisi (%40)</div>
+        <div class="result-value" id="finalEffect">0.00</div>
+      </div>
+
+      <div class="result-box">
+        <div class="result-title">Dönem Sonu Ortalaması</div>
+        <div class="result-value highlight" id="yearGrade">0.00</div>
+      </div>
+
+      <div class="needed-score">
+        <h2>Hedef Not Hesaplayıcı</h2>
+
+        <label>Hedef Dönem Sonu Notu</label>
+        <input type="number" id="targetScore" placeholder="Örn: 75">
+
+        <button class="primary" onclick="calculateNeededFinal()">Finalden Kaç Almalıyım?</button>
+
+        <div style="margin-top:15px;font-size:1.1rem;font-weight:600;" id="neededResult"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="footer-logo">BABA MACİT</div>
+
+<script>
+
+const data = {
+  "1. Sınıf": [
+    { name: "Temel Bilimlere Giriş ve Hücre Biyolojisi", akts: 7 },
+    { name: "Hücre Biyolojisi ve Genetik", akts: 11 },
+    { name: "Doku ve Hareket Sistemi I", akts: 16 },
+    { name: "Doku ve Hareket Sistemi II", akts: 9 },
+    { name: "DSBB", akts: 5 },
+    { name: "İngilizce", akts: 4 },
+    { name: "Atatürk İlkeleri ve İnkılap Tarihi", akts: 2 },
+    { name: "Kariyer Planlama", akts: 2 },
+    { name: "Toplumsal Destek Projeleri", akts: 2 },
+    { name: "Bilişim Uygulamaları", akts: 2 }
+  ],
+
+  "2. Sınıf": [
+    { name: "Hemopoetik, Dolaşım ve Solunum Sistemleri", akts: 11 },
+    { name: "Boşaltım ve Sindirim Sistemleri", akts: 12 },
+    { name: "Merkezi Sinir Sistemi ve Duyu Organları", akts: 13 },
+    { name: "Endokrin ve Üreme Sistemleri", akts: 8 },
+    { name: "Hastalıkların Biyolojik Temeli", akts: 8 },
+    { name: "DSBB", akts: 3 },
+    { name: "Makale Saati", akts: 1 },
+    { name: "Özel Çalışma Modülü", akts: 2 },
+    { name: "Türk Dili", akts: 2 }
+  ],
+
+  "3. Sınıf": [
+    { name: "Kliniğe Giriş ve Enfeksiyon Hastalıkları", akts: 9 },
+    { name: "Araştırma Bloğu ve Kan Lenf İmmün Sistem Hastalıkları", akts: 6 },
+    { name: "Solunum Dolaşım Sistemi", akts: 8 },
+    { name: "Gastrointestinal Sistem Hastalıkları", akts: 8 },
+    { name: "Endokrin-Genitoüriner Sistem", akts: 9 },
+    { name: "Kas İskelet Nöroloji", akts: 9 },
+    { name: "Mesleksel Beceri Ders Bloğu", akts: 7 },
+    { name: "DSBB", akts: 4 }
+  ],
+
+  "4. Sınıf": [
+    { name: "Bütünleşik Cerrahi", akts: 9 },
+    { name: "Bütünleşik Dahiliye", akts: 18 },
+    { name: "Çocuk Sağlığı ve Hastalıkları", akts: 19 },
+    { name: "Halk Sağlığı", akts: 4 },
+    { name: "Kadın Hastalıkları ve Doğum", akts: 8 },
+    { name: "Tıp Etiği", akts: 2 }
+  ],
+
+  "5. Sınıf": [
+    { name: "Acil Tıp", akts: 5 },
+    { name: "Adli Tıp", akts: 4 },
+    { name: "Dermatoloji", akts: 4 },
+    { name: "Dolaşım Sistemi", akts: 5 },
+    { name: "Enfeksiyon Hastalıkları", akts: 4 },
+    { name: "Fiziksel Tıp ve Rehabilitasyon", akts: 3 },
+    { name: "Göz Hastalıkları", akts: 4 },
+    { name: "Kulak Burun Boğaz Hastalıkları", akts: 3 },
+    { name: "Nöroloji-Nöroşirürji", akts: 6 },
+    { name: "Ortopedi ve Travmatoloji", akts: 3 },
+    { name: "Psikiyatri-Çocuk Psikiyatrisi", akts: 3 },
+    { name: "Radyoloji", akts: 3 },
+    { name: "Rasyonel Farmakoterapi", akts: 3 },
+    { name: "Solunum Sistemi", akts: 6 },
+    { name: "Üroloji", akts: 3 },
+    { name: "Afet Tıbbı", akts: 2 }
+  ]
+};
+
+const classSelect = document.getElementById('classSelect');
+const coursesContainer = document.getElementById('courses');
+
+Object.keys(data).forEach(className => {
+  const option = document.createElement('option');
+  option.value = className;
+  option.textContent = className;
+  classSelect.appendChild(option);
+});
+
+function renderCourses() {
+  const selected = classSelect.value;
+  coursesContainer.innerHTML = '';
+
+  data[selected].forEach((course, index) => {
+    const div = document.createElement('div');
+    div.className = 'course';
+
+    div.innerHTML = `
+      <div class="course-header">
+        <div class="course-name">${course.name}</div>
+        <div class="akts">${course.akts} AKTS</div>
+      </div>
+
+      <input type="number" min="0" max="100" placeholder="Not gir" class="grade-input" data-akts="${course.akts}">
+    `;
+
+    coursesContainer.appendChild(div);
+  });
+}
+
+classSelect.addEventListener('change', renderCourses);
+renderCourses();
+
+function calculateResults() {
+
+  const inputs = document.querySelectorAll('.grade-input');
+
+  let totalWeighted = 0;
+  let totalAkts = 0;
+
+  inputs.forEach(input => {
+    const grade = parseFloat(input.value) || 0;
+    const akts = parseFloat(input.dataset.akts);
+
+    totalWeighted += grade * akts;
+    totalAkts += akts;
+  });
+
+  const committeeAverage = totalWeighted / totalAkts;
+
+  const finalExam = parseFloat(document.getElementById('finalExam').value) || 0;
+
+  const finalEffect = finalExam * 0.4;
+
+  const yearGrade = (committeeAverage * 0.6) + finalEffect;
+
+  document.getElementById('committeeAverage').textContent = committeeAverage.toFixed(2);
+  document.getElementById('finalEffect').textContent = finalEffect.toFixed(2);
+
+  const yearGradeElement = document.getElementById('yearGrade');
+  yearGradeElement.textContent = yearGrade.toFixed(2);
+
+  yearGradeElement.classList.remove('success', 'danger');
+
+  if(yearGrade >= 60) {
+    yearGradeElement.classList.add('success');
+  } else {
+    yearGradeElement.classList.add('danger');
+  }
+}
+
+function calculateNeededFinal() {
+
+  const inputs = document.querySelectorAll('.grade-input');
+
+  let totalWeighted = 0;
+  let totalAkts = 0;
+
+  inputs.forEach(input => {
+    const grade = parseFloat(input.value) || 0;
+    const akts = parseFloat(input.dataset.akts);
+
+    totalWeighted += grade * akts;
+    totalAkts += akts;
+  });
+
+  const committeeAverage = totalWeighted / totalAkts;
+
+  const target = parseFloat(document.getElementById('targetScore').value);
+
+  if(isNaN(target)) {
+    document.getElementById('neededResult').textContent = 'Lütfen hedef not gir.';
+    return;
+  }
+
+  const neededFinal = (target - (committeeAverage * 0.6)) / 0.4;
+
+  if(neededFinal > 100) {
+    document.getElementById('neededResult').textContent = `Bu hedef için finalden ${neededFinal.toFixed(2)} alman gerekiyor. (100 üstü)`;
+  }
+  else if(neededFinal < 0) {
+    document.getElementById('neededResult').textContent = 'Hedefe zaten ulaştın.';
+  }
+  else {
+    document.getElementById('neededResult').textContent = `Hedefe ulaşmak için finalden en az ${neededFinal.toFixed(2)} almalısın.`;
+  }
+}
+
+function resetAll() {
+  document.querySelectorAll('input').forEach(input => input.value = '');
+
+  document.getElementById('committeeAverage').textContent = '0.00';
+  document.getElementById('finalEffect').textContent = '0.00';
+  document.getElementById('yearGrade').textContent = '0.00';
+  document.getElementById('neededResult').textContent = '';
+}
+
+</script>
+
+</body>
+</html>
